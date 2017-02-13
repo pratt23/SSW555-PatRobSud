@@ -8,6 +8,12 @@ import sys
 import codecs
 import datetime
 
+tag=pid=name="NA"
+dob=dod=sex="NA"
+famc=fid=husb="NA"
+fams=wife=div="NA"
+cid=[]
+
 def validate(date_text):
     try:
         datetime.datetime.strptime(date_text, '%Y-%m-%d')
@@ -45,9 +51,6 @@ class fam():
     # def addChild(self, cid)
     #     self.child.append(cid)
 
-### VALID TAGS IN gedcom FILES ###
-tags2 = [ "INDI" , "NAME" , "SEX" , "BIRT" , "DEAT" , "FAMC" , "FAMS" , "CITY" , "STAE" , "CTRY" , "SURN" , "DATE" ,"ADDR" , "FAM" , "DIV" , "MARR" , "HUSB" , "WIFE" , "CHIL" , "GIVN" , "DATE" , "HEAD" , "TRLR" , "NOTE" , "RFN" , "CHAN" ,"TIME" , "_MAR" , "SUBM" ]
-
 ### TAGS WE'LL USE
 tags = [ "INDI" , "FAM" , "NAME" , "SEX" , "BIRT" , "DEAT" , "FAMC" , "FAMS" , "DATE" , "MARR" , "HUSB" , "WIFE" , "CHIL" , "DIV" ]
 
@@ -62,7 +65,7 @@ if basefilename2[ -1 ] != '.ged':
     print ( "Gedcom file not entered" )
     exit ( )
 
-### VARIABLES BEING USED for INDI - tag pid name dob dod sex famc, fams 
+### VARIABLES BEING USED for INDI - tag pid name dob dod sex famc fams 
 ### VARIABLES BEING USED for FAMI - tag fid husb wife dom dod cid
 
 indno=0
@@ -97,7 +100,7 @@ try:
                     # CHECKING FOR VALID TAGS
                         tag=words[1]
                         if tag == "NAME":
-                            name=words
+                            name=words[2]+' '+words[3]
                         elif tag=="SEX":
                             sex=words[2]
                         elif tag=="BIRT":
