@@ -4,24 +4,36 @@ import os
 import sys
 import codecs
 import datetime
+from prettytable import PrettyTable
+
+def getdate(d,m,y):
+    date=d+' '+m+' '+y
+    return date
 
 def refresh():
     global iden, name, sex, dob, dod, famc, fams, flag, hid, wid, dom, doe, cid
-    iden = "NA"
-    name = "NA"
-    sex = "NA"
-    dob = "NA"
-    dod = "NA"
-    famc = "NA"
-    fams = "NA"
-    hid = "NA"
-    wid = "NA"
-    dom = "NA"
-    doe = "NA"
-    cid = "NA"
+    iden = name = sex = "NA"
+    dob = dod = famc = "NA"
+    fams = hid = wid = "NA"
+    dom = doe = "NA"
+    cid = []
     flag = 0 # 1 for indi, 2 for family in level 0 lines.
 
+
+'''
+def display_all(persons, families):
+    
+    ### NEED TO FIGURE OUT HOW TO MAKE PRETTY TABLES IN A SEPARATE FUNCTION INSTEAD OF IN MAIN ###
+    x = PrettyTable() # For people
+    x.field_names = ["I.D.","NAME","SEX","BIRTH","DEATH","FAM_C","FAM_S"]
+    for person in persons:
+
+    x.addrow([])
+    y = PrettyTable() # For Families
+    y.field_names = ["I.D.","HUSBAND","WIFE","MARRIAGE","MARR END","CHILDREN"] '''
+
 class individual:
+
     def __init__(self, pid, name, sex, dob, dod, famc, fams):
         self.pid=pid
         self.name=name
@@ -32,6 +44,9 @@ class individual:
         self.fams=fams
 
     def showinfo(self):
+        '''
+        return self.pid,self.name,self.sex,self.dob,self.dod,self.famc,self.fams
+        '''
         print('{} : {}'.format("ID",self.pid))
         print('{} : {}'.format("NAME",self.name))
         print('{} : {}'.format("SEX",self.sex))
@@ -39,6 +54,7 @@ class individual:
         print('{} : {}'.format("D.O.D",self.dod))
         print('{} : {}'.format("FAMC",self.famc))
         print('{} : {}'.format("FAMS",self.fams))
+        
 
 class family:
     def __init__(self, fid, hid, wid, dom, doe, cid):
@@ -50,6 +66,9 @@ class family:
         self.cid=cid
 
     def cout(self):
+        '''
+        return self.fid,self.hid,self.wid,self.dom,self.doe,self.cid
+        '''
         print('{} : {}'.format("ID",self.fid))
         print('{} : {}'.format("HUSB",self.hid))
         print('{} : {}'.format("WIFE",self.wid))
@@ -72,6 +91,14 @@ if basefilename2[ -1 ] != '.ged':
     print ( "Gedcom file not entered" )
     exit ( )
 
+indi=[]
+fams=[]
+
+x = PrettyTable() # For people
+x.field_names = ["I.D.","NAME","SEX","BIRTH","DEATH","FAM_C","FAM_S"]
+y = PrettyTable() # For Families
+y.field_names = ["I.D.","HUSBAND","WIFE","MARRIAGE","MARR_END","CHILDREN"]
+
 try:
     # OPEN FILE IN READ MODE
     refresh()
@@ -82,13 +109,20 @@ try:
             # READ FILE LINE BY LINE
             for line in file:
                 # SPLIT LINE INTO LIST OF WORDS
-                words = line.split ( )
+                words = line.split()
                 level = words[ 0 ]
 
                 if level=='0':
-                    iden = individual(iden,name, sex, dob, dod, famc, fams)
-                    print(iden)
-                    iden.showinfo()
+                    if flag == 1:
+                        indi.append(iden)
+                        iden = individual(iden, name, sex, dob, dod, famc, fams)
+                        x.add_row([iden, name, sex, dob, dod, famc, fams])
+                        #iden.showinfo()
+                    elif flag == 2:
+                        fams.append(iden)
+                        iden = family(iden, hid, wid, dom, doe, cid)
+                        y.add_row([iden, hid, wid, dom, doe, cid])
+                        #iden.cout()                    
                     refresh()
                     tag=words[-1]
                     if tag=="INDI":
@@ -107,43 +141,40 @@ try:
                             line=next(file)
                             words=line.split()
                             if words[1]=="DATE":
-                                dd=words[2]
-                                mm=words[3]
-                                yy=words[4]
-                                dob=dd+' '+mm+' '+yy
+                                dob=getdate(words[2],words[3],words[4])
                         elif tag == "DEAT":
                             line=next(file)
                             words=line.split()
                             if words[1]=="DATE":
-                                dd=words[2]
-                                mm=words[3]
-                                yy=words[4]
+                                dod=getdate(words[2],words[3],words[4])
                         elif tag == "FAMC":
                             famc=words[-1]
                         elif tag == "FAMS":
                             fams=words[-1]
+                        elif tag == "HUSB":
+                            hid = words[-1]
+                        elif tag == "WIFE":
+                            wid = words[-1]
+                        elif tag == "CHIL":
+                            cid.append(words[-1])
+                        elif tag == "MARR":
+                            line=next(file)
+                            words=line.split()
+                            if words[1]=="DATE":
+                                dom=getdate(words[2],words[3],words[4])
+                        elif tag == "DIV":
+                            line=next(file)
+                            words=line.split()
+                            if words[1]=="DATE":
+                                doe=getdate(words[2],words[3],words[4])
 
+    print("INDIVIDUALS")
+    print(x)
+    #print x.get_string()
 
-
-
-
-
-                '''
-                if words[1] in tags:
-                    # CHECKING FOR VALID TAGS
-                    tag=words[1]
-                elif words[-1] in tags:
-                    # CHECKING FOR TAGS IN SPECIAL CONDITIONS
-                    tag=words[-1]
-                else:
-                    tag="*** INVALID TAG ***"
-                '''
-
-
-                '''
-                print ( "LEVEL: " + level + "\tTAG: " + tag + "\n" )
-                print(line + "LEVEL: " + level + "\tTAG: " + tag + "\n", file=write_to)
-                '''
+    print("FAMILY")
+    print(y)
+    #print y.get_string()
 
 except FileNotFoundError:
     # File not found
