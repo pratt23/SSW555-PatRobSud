@@ -6,12 +6,11 @@ from sudhansh import no_reps
 i=["I0922","I0065","I1994","133262"]
 f=["F3600","753F","GD192","BLINK182"]
 empty=[]
-opg=[]
 
+opg=[]
 ii="I0922"
 io="I0922REP"
 ip="147699"
-
 fi="BLINK182"
 fo="BLINK182REP"
 fp="TUPAC"
