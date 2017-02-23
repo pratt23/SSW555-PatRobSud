@@ -83,13 +83,14 @@ class family:
         print('{} : {}'.format("D.O.M",self.dom))
         print('{} : {}'.format("D.O.E",self.doe))
         print('{} : {}'.format("CID",self.cid))
+        print('{} : {}'.format("No. of Siblings",self.sib_no))
 
 ### VALID TAGS IN gedcom FILES ###
 tags = [ "INDI" , "FAM" , "NAME" , "SEX" , "BIRT" , "DEAT" , "FAMC" , "FAMS" , 
 "DATE" , "MARR" , "HUSB" , "WIFE" , "CHIL" , "DIV" ]
 
-#filename = input ( "Enter the location of the file: " )
-filename="/Users/sudhansh/Desktop/CS-555/test1.ged" #For testing purposes
+filename = input ( "Enter the location of the file: " )
+#filename="/Users/sudhansh/Desktop/CS-555/test1.ged" #For testing purposes
 
 ### CHECKING IF GEDCOM IS ENTERED, HELP TAKEN FORM AKSHAY SUNDERWANI ###
 path = os.getcwd ( )  # method to fetch working directory path.
