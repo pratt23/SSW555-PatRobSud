@@ -10,6 +10,7 @@ import sys
 import codecs
 import datetime
 from sudhansh import no_reps
+from prateek import sibling_nos
 # from prettytable import PrettyTable
 
 def getdate(d,m,y):
@@ -70,6 +71,7 @@ class family:
         self.dom=dom
         self.doe=doe
         self.cid=cid
+        self.sib_no=sibling_nos(cid)
 
     def cout(self):
         '''

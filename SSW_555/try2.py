@@ -1,13 +1,19 @@
 #!/usr/bin/python
 
+'''
+Parser for Robert Basil Majdi, Prateek Tyagi and Sudhansh Aggarwal
+CS-555/SSW-555 
+'''
+
 import os
 import sys
 import codecs
 import datetime
-from prettytable import PrettyTable
+from sudhansh import no_reps
+# from prettytable import PrettyTable
 
 def getdate(d,m,y):
-    date=d+' '+m+' '+y
+    date=d+'-'+m+'-'+y
     return date
 
 def refresh():
@@ -92,12 +98,16 @@ if basefilename2[ -1 ] != '.ged':
     exit ( )
 
 indi=[]
-fams=[]
+famillia=[]
+reps_i=[] #strores conflicting/repeating individual IDs
+reps_f=[] #stores conflicting/repeating family IDs
 
+'''
 x = PrettyTable() # For people
 x.field_names = ["I.D.","NAME","SEX","BIRTH","DEATH","FAM_C","FAM_S"]
 y = PrettyTable() # For Families
 y.field_names = ["I.D.","HUSBAND","WIFE","MARRIAGE","MARR_END","CHILDREN"]
+'''
 
 try:
     # OPEN FILE IN READ MODE
@@ -114,15 +124,17 @@ try:
 
                 if level=='0':
                     if flag == 1:
+                        iden=no_reps(indi,iden,flag,reps_i)
                         indi.append(iden)
                         iden = individual(iden, name, sex, dob, dod, famc, fams)
-                        x.add_row([iden, name, sex, dob, dod, famc, fams])
-                        #iden.showinfo()
+                        #x.add_row([iden, name, sex, dob, dod, famc, fams])
+                        iden.showinfo()
                     elif flag == 2:
-                        fams.append(iden)
+                        iden=no_reps(famillia,iden,flag,reps_f)
+                        famillia.append(iden)
                         iden = family(iden, hid, wid, dom, doe, cid)
-                        y.add_row([iden, hid, wid, dom, doe, cid])
-                        #iden.cout()                    
+                        #y.add_row([iden, hid, wid, dom, doe, cid])
+                        iden.cout()                    
                     refresh()
                     tag=words[-1]
                     if tag=="INDI":
@@ -167,14 +179,6 @@ try:
                             words=line.split()
                             if words[1]=="DATE":
                                 doe=getdate(words[2],words[3],words[4])
-
-    print("INDIVIDUALS")
-    print(x)
-    #print x.get_string()
-
-    print("FAMILY")
-    print(y)
-    #print y.get_string()
 
 except FileNotFoundError:
     # File not found
