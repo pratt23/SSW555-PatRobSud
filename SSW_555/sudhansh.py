@@ -14,3 +14,10 @@ def no_reps(group,id_, flag,op_group):
         return id_
 
 def valid_date(date):
+
+def sibs_dont_marry():
+	'''
+	for list of fams:
+		if husb in fam[i].cid and wife in fam[i].cid:
+			dude wtf?!?!?!?
+	'''
