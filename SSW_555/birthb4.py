@@ -15,7 +15,7 @@ def birth_b4_dth(dob, dod):
     
 
     
-    if dod == "None": 
+    if dod == "NA" or dob == "NA": 
         return True
     
     elif convert_2date(dod) < convert_2date(dob):    

@@ -12,3 +12,5 @@ def no_reps(group,id_, flag,op_group):
             op_group.append(id_)
             id_=id_+"REP"
         return id_
+
+def valid_date(date):
