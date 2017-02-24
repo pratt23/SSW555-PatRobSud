@@ -35,6 +35,27 @@ class TestMyFunctions(unittest.TestCase):
 		self.assertEqual(no_reps(i,"90771",9,opg),0)
 	### TESTS FOR NO REPETITION END ###
 
+	### VALID DATES START ###
+	# FORMAT DD-MM-YYYY #
+	def test_valid_correct(self):
+		self.assertTrue(valid_date("01-01-1996"))
+	def test_valid_feb(self):
+		self.assertTrue(valid_date("29-02-2004"))
+	def test_invalid_feb(self):
+		self.assertFalse(valid_date("31-02-1910"))
+	def test_invalid_format(self):
+		self.assertFalse(valid_date("02-13-2001"))
+	def test_future_date(self):
+		self.assertFalse(valid_date("02-02-2020"))
+	def test_invalid_ivalid(self):
+		self.assertFalse(valid_date("32-13-1080"))
+	'''
+	I need to finure out how to raise exceptions
+	def test_alphabet_wtf(self):
+		self.assertRaises(valid_date("13p09-2001"))
+	'''
+	#### VALID DATES END ####
+
 def main():
 	unittest.main()
 
