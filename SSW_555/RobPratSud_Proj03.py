@@ -142,9 +142,12 @@ try:
             words=line.split()
             if words[0]=='0':
                 if words[-1] == "INDI":
-                    c_ind++
+                    c_ind+=1
                 elif words[-1] == "FAM":
-                    c_fam++
+                    c_fam+=1
+
+
+
     refresh()
     with open ( filename ) as file:
         # READ FILE LINE BY LINE
