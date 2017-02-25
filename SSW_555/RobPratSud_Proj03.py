@@ -116,72 +116,69 @@ try:
     # OPEN FILE IN READ MODE
     refresh()
     with open ( filename ) as file:
-        with open("output.txt", 'w') as write_to:
-            # THE DIRECTORY FROM WHICH THE SCRIPT IS RUN IS WHERE output.txt IS GENERATED
-            
-            # READ FILE LINE BY LINE
-            for line in file:
-                # SPLIT LINE INTO LIST OF WORDS
-                words = line.split()
-                level = words[ 0 ]
+        # READ FILE LINE BY LINE
+        for line in file:
+            # SPLIT LINE INTO LIST OF WORDS
+            words = line.split()
+            level = words[ 0 ]
 
-                if level=='0':
-                    if flag == 1:
-                        iden=no_reps(indi,iden,flag,reps_i)
-                        indi.append(iden)
-                        iden = individual(iden, name, sex, dob, dod, famc, fams)
-                        #x.add_row([iden, name, sex, dob, dod, famc, fams])
-                        iden.showinfo()
-                    elif flag == 2:
-                        iden=no_reps(famillia,iden,flag,reps_f)
-                        famillia.append(iden)
-                        iden = family(iden, hid, wid, dom, doe, cid)
-                        #y.add_row([iden, hid, wid, dom, doe, cid])
-                        iden.cout()                    
-                    refresh()
-                    tag=words[-1]
-                    if tag=="INDI":
-                        flag=1
-                    elif tag=="FAM":
-                        flag=2
-                    iden = words[1]
-                if level != '0':
-                    tag=words[1]
-                    if tag in tags:
-                        if tag == "NAME":
-                            name=words[2:]
-                        elif tag == "SEX":
-                            sex=words[-1]
-                        elif tag == "BIRT":
-                            line=next(file)
-                            words=line.split()
-                            if words[1]=="DATE":
-                                dob=getdate(words[2],words[3],words[4])
-                        elif tag == "DEAT":
-                            line=next(file)
-                            words=line.split()
-                            if words[1]=="DATE":
-                                dod=getdate(words[2],words[3],words[4])
-                        elif tag == "FAMC":
-                            famc=words[-1]
-                        elif tag == "FAMS":
-                            fams=words[-1]
-                        elif tag == "HUSB":
-                            hid = words[-1]
-                        elif tag == "WIFE":
-                            wid = words[-1]
-                        elif tag == "CHIL":
-                            cid.append(words[-1])
-                        elif tag == "MARR":
-                            line=next(file)
-                            words=line.split()
-                            if words[1]=="DATE":
-                                dom=getdate(words[2],words[3],words[4])
-                        elif tag == "DIV":
-                            line=next(file)
-                            words=line.split()
-                            if words[1]=="DATE":
-                                doe=getdate(words[2],words[3],words[4])
+            if level=='0':
+                if flag == 1:
+                    iden=no_reps(indi,iden,flag,reps_i)
+                    indi.append(iden)
+                    iden = individual(iden, name, sex, dob, dod, famc, fams)
+                    #x.add_row([iden, name, sex, dob, dod, famc, fams])
+                    iden.showinfo()
+                elif flag == 2:
+                    iden=no_reps(famillia,iden,flag,reps_f)
+                    famillia.append(iden)
+                    iden = family(iden, hid, wid, dom, doe, cid)
+                    #y.add_row([iden, hid, wid, dom, doe, cid])
+                    iden.cout()                    
+                refresh()
+                tag=words[-1]
+                if tag=="INDI":
+                    flag=1
+                elif tag=="FAM":
+                    flag=2
+                iden = words[1]
+            if level != '0':
+                tag=words[1]
+                if tag in tags:
+                    if tag == "NAME":
+                        name=words[2:]
+                    elif tag == "SEX":
+                        sex=words[-1]
+                    elif tag == "BIRT":
+                        line=next(file)
+                        words=line.split()
+                        if words[1]=="DATE":
+                            dob=getdate(words[2],words[3],words[4])
+                    elif tag == "DEAT":
+                        line=next(file)
+                        words=line.split()
+                        if words[1]=="DATE":
+                            dod=getdate(words[2],words[3],words[4])
+                    elif tag == "FAMC":
+                        famc=words[-1]
+                    elif tag == "FAMS":
+                        fams=words[-1]
+                    elif tag == "HUSB":
+                        hid = words[-1]
+                    elif tag == "WIFE":
+                        wid = words[-1]
+                    elif tag == "CHIL":
+                        cid.append(words[-1])
+                    elif tag == "MARR":
+                        line=next(file)
+                        words=line.split()
+                        if words[1]=="DATE":
+                            dom=getdate(words[2],words[3],words[4])
+                    elif tag == "DIV":
+                        line=next(file)
+                        words=line.split()
+                        if words[1]=="DATE":
+                            doe=getdate(words[2],words[3],words[4])
 
 except FileNotFoundError:
     # File not found
