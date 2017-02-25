@@ -41,7 +41,16 @@ def display_all(persons, families):
 
 class individual:
 
-    def __init__(self, pid, name, sex, dob, dod, famc, fams):
+    def __init__(self):
+        self.pid="NA"
+        self.name="NA"
+        self.sex="NA"
+        self.dob="NA"
+        self.dod="NA"
+        self.famc="NA"
+        self.fams="NA"
+
+    def info(self, pid, name, sex, dob, dod, famc, fams):
         self.pid=pid
         self.name=name
         self.sex=sex
@@ -65,6 +74,15 @@ class individual:
 
 class family:
     def __init__(self, fid, hid, wid, dom, doe, cid):
+        self.fid="NA"
+        self.hid="NA"
+        self.wid="NA"
+        self.dom="NA"
+        self.doe="NA"
+        self.cid=[]
+        self.sib_no=0
+    
+    def info(self, fid, hid, wid, dom, doe, cid):
         self.fid=fid
         self.hid=hid
         self.wid=wid
@@ -112,8 +130,21 @@ y = PrettyTable() # For Families
 y.field_names = ["I.D.","HUSBAND","WIFE","MARRIAGE","MARR_END","CHILDREN"]
 '''
 
+c_ind = 0
+c_fam = 0
+
 try:
     # OPEN FILE IN READ MODE
+
+    #Counting the number of people/families
+    with open (filename) as file:
+        for line in file:
+            words=line.split()
+            if words[0]=='0':
+                if words[-1] == "INDI":
+                    c_ind++
+                elif words[-1] == "FAM":
+                    c_fam++
     refresh()
     with open ( filename ) as file:
         # READ FILE LINE BY LINE
