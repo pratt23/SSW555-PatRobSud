@@ -73,7 +73,7 @@ class individual:
         
 
 class family:
-    def __init__(self, fid, hid, wid, dom, doe, cid):
+    def __init__(self):
         self.fid="NA"
         self.hid="NA"
         self.wid="NA"
@@ -107,8 +107,8 @@ class family:
 tags = [ "INDI" , "FAM" , "NAME" , "SEX" , "BIRT" , "DEAT" , "FAMC" , "FAMS" , 
 "DATE" , "MARR" , "HUSB" , "WIFE" , "CHIL" , "DIV" ]
 
-filename = input ( "Enter the location of the file: " )
-#filename="/Users/sudhansh/Desktop/CS-555/test1.ged" #For testing purposes
+#filename = input ( "Enter the location of the file: " )
+filename="/Users/sudhansh/Desktop/CS-555/test1.ged" #For testing purposes
 
 ### CHECKING IF GEDCOM IS ENTERED, HELP TAKEN FORM AKSHAY SUNDERWANI ###
 path = os.getcwd ( )  # method to fetch working directory path.
@@ -130,9 +130,8 @@ y = PrettyTable() # For Families
 y.field_names = ["I.D.","HUSBAND","WIFE","MARRIAGE","MARR_END","CHILDREN"]
 '''
 
-c_ind = 0
-c_fam = 0
-
+c_ind = c_fam = 0 # for counting the total no.s of individuals and families resp
+c_ind1 = c_fam1 = 0 # for keeping track of indi/fams
 try:
     # OPEN FILE IN READ MODE
 
@@ -145,9 +144,8 @@ try:
                     c_ind+=1
                 elif words[-1] == "FAM":
                     c_fam+=1
-
-
-
+    individuals=[individual() for i in range(c_ind) ]
+    families=[family() for i in range(c_fam) ]
     refresh()
     with open ( filename ) as file:
         # READ FILE LINE BY LINE
@@ -160,15 +158,17 @@ try:
                 if flag == 1:
                     iden=no_reps(indi,iden,flag,reps_i)
                     indi.append(iden)
-                    iden = individual(iden, name, sex, dob, dod, famc, fams)
+                    individuals[c_ind1].info(iden, name, sex, dob, dod, famc, fams)
                     #x.add_row([iden, name, sex, dob, dod, famc, fams])
-                    iden.showinfo()
+                    individuals[c_ind1].showinfo()
+                    c_ind1+=1
                 elif flag == 2:
                     iden=no_reps(famillia,iden,flag,reps_f)
                     famillia.append(iden)
-                    iden = family(iden, hid, wid, dom, doe, cid)
+                    families[c_fam1].info(iden, hid, wid, dom, doe, cid)
                     #y.add_row([iden, hid, wid, dom, doe, cid])
-                    iden.cout()                    
+                    families[c_fam1].cout()
+                    c_fam1+=1                    
                 refresh()
                 tag=words[-1]
                 if tag=="INDI":
