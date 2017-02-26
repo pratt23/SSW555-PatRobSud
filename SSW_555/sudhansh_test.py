@@ -2,6 +2,8 @@
 
 import unittest
 from sudhansh import no_reps
+from sudhansh import valid_date
+#from sudhansh import sibs_dont_marry
 
 i=["I0922","I0065","I1994","133262"]
 f=["F3600","753F","GD192","BLINK182"]
@@ -49,14 +51,12 @@ class TestMyFunctions(unittest.TestCase):
 		self.assertFalse(valid_date("02-02-2020"))
 	def test_invalid_ivalid(self):
 		self.assertFalse(valid_date("32-13-1080"))
-	'''
-	I need to finure out how to raise exceptions
-
 	def test_alphabet_wtf(self):
-		self.assertRaises(valid_date("13p09-2001"))
-	
-	'''
+		self.assertFalse(valid_date("13p09-2001"))	
 	#### VALID DATES END ####
+
+	### SIBLINGS DON'T MARRY START ###
+	#### SIBLINGS DON'T MARRY END ####
 
 def main():
 	unittest.main()
