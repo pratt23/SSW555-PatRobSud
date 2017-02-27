@@ -10,11 +10,14 @@ import sys
 import codecs
 import datetime
 from sudhansh import no_reps
+from sudhansh import sibs_no_marry
+from sudhansh import valid_date
 from prateek import sibling_nos
-# from prettytable import PrettyTable
+import classes
+import prettytable
 
 def getdate(d,m,y):
-    date=d+'-'+m+'-'+y
+    date = d+'-'+m+'-'+y
     return date
 
 def refresh():
@@ -26,19 +29,6 @@ def refresh():
     cid = []
     flag = 0 # 1 for indi, 2 for family in level 0 lines.
 
-
-'''
-def display_all(persons, families):
-    
-    ### NEED TO FIGURE OUT HOW TO MAKE PRETTY TABLES IN A SEPARATE FUNCTION INSTEAD OF IN MAIN ###
-    x = PrettyTable() # For people
-    x.field_names = ["I.D.","NAME","SEX","BIRTH","DEATH","FAM_C","FAM_S"]
-    for person in persons:
-
-    x.addrow([])
-    y = PrettyTable() # For Families
-    y.field_names = ["I.D.","HUSBAND","WIFE","MARRIAGE","MARR END","CHILDREN"] '''
-
 class individual:
 
     def __init__(self):
@@ -49,6 +39,7 @@ class individual:
         self.dod="NA"
         self.famc="NA"
         self.fams="NA"
+        self.err=[]
 
     def info(self, pid, name, sex, dob, dod, famc, fams):
         self.pid=pid
@@ -58,11 +49,12 @@ class individual:
         self.dod=dod
         self.famc=famc
         self.fams=fams
+        if not valid_date(dod):
+            self.err.append("US42-DOD")
+        if not valid_date(dob):
+            self.err.append("US42-DOB")
 
     def showinfo(self):
-        '''
-        return self.pid,self.name,self.sex,self.dob,self.dod,self.famc,self.fams
-        '''
         print('{} : {}'.format("ID",self.pid))
         print('{} : {}'.format("NAME",self.name))
         print('{} : {}'.format("SEX",self.sex))
@@ -70,7 +62,9 @@ class individual:
         print('{} : {}'.format("D.O.D",self.dod))
         print('{} : {}'.format("FAMC",self.famc))
         print('{} : {}'.format("FAMS",self.fams))
-        
+
+    def update_table(self):
+        x.add_row([self.pid,self.name,self.sex,self.dob,self.dod,self.famc,self.fams,self.err])
 
 class family:
     def __init__(self):
@@ -81,6 +75,7 @@ class family:
         self.doe="NA"
         self.cid=[]
         self.sib_no=0
+        self.err=[]
     
     def info(self, fid, hid, wid, dom, doe, cid):
         self.fid=fid
@@ -90,11 +85,12 @@ class family:
         self.doe=doe
         self.cid=cid
         self.sib_no=sibling_nos(cid)
+        if not valid_date(dom):
+            self.err.append("US42-DOM")
+        if not valid_date(doe):
+            self.err.append("US42-DOE")
 
     def cout(self):
-        '''
-        return self.fid,self.hid,self.wid,self.dom,self.doe,self.cid
-        '''
         print('{} : {}'.format("ID",self.fid))
         print('{} : {}'.format("HUSB",self.hid))
         print('{} : {}'.format("WIFE",self.wid))
@@ -103,12 +99,17 @@ class family:
         print('{} : {}'.format("CID",self.cid))
         print('{} : {}'.format("No. of Siblings",self.sib_no))
 
+    def update_table(self):
+        y.add_row([self.fid,self.hid,self.wid,self.dom,self.doe,self.cid,self.err])
+
+
 ### VALID TAGS IN gedcom FILES ###
 tags = [ "INDI" , "FAM" , "NAME" , "SEX" , "BIRT" , "DEAT" , "FAMC" , "FAMS" , 
 "DATE" , "MARR" , "HUSB" , "WIFE" , "CHIL" , "DIV" ]
 
 #filename = input ( "Enter the location of the file: " )
-filename="/Users/sudhansh/Desktop/CS-555/test1.ged" #For testing purposes
+#filename="/Users/sudhansh/Desktop/CS-555/test1.ged" #For testing purposes
+filename="/Users/sudhansh/git/SSW_555/smith_tree1.ged" #For testing purposes
 
 ### CHECKING IF GEDCOM IS ENTERED, HELP TAKEN FORM AKSHAY SUNDERWANI ###
 path = os.getcwd ( )  # method to fetch working directory path.
@@ -123,18 +124,10 @@ famillia=[]
 reps_i=[] #strores conflicting/repeating individual IDs
 reps_f=[] #stores conflicting/repeating family IDs
 
-'''
-x = PrettyTable() # For people
-x.field_names = ["I.D.","NAME","SEX","BIRTH","DEATH","FAM_C","FAM_S"]
-y = PrettyTable() # For Families
-y.field_names = ["I.D.","HUSBAND","WIFE","MARRIAGE","MARR_END","CHILDREN"]
-'''
-
 c_ind = c_fam = 0 # for counting the total no.s of individuals and families resp
 c_ind1 = c_fam1 = 0 # for keeping track of indi/fams
 try:
     # OPEN FILE IN READ MODE
-
     #Counting the number of people/families
     with open (filename) as file:
         for line in file:
@@ -144,8 +137,11 @@ try:
                     c_ind+=1
                 elif words[-1] == "FAM":
                     c_fam+=1
+
+    # Creating an array for each; containing the exact number of objects needed
     individuals=[individual() for i in range(c_ind) ]
     families=[family() for i in range(c_fam) ]
+
     refresh()
     with open ( filename ) as file:
         # READ FILE LINE BY LINE
@@ -156,18 +152,18 @@ try:
 
             if level=='0':
                 if flag == 1:
-                    iden=no_reps(indi,iden,flag,reps_i)
-                    indi.append(iden)
                     individuals[c_ind1].info(iden, name, sex, dob, dod, famc, fams)
-                    #x.add_row([iden, name, sex, dob, dod, famc, fams])
-                    individuals[c_ind1].showinfo()
+                    if no_reps(indi,iden,flag):
+                        individuals[c_ind1].err.append("US22")
+                    indi.append(iden)
+                    #individuals[c_ind1].showinfo()
                     c_ind1+=1
                 elif flag == 2:
-                    iden=no_reps(famillia,iden,flag,reps_f)
-                    famillia.append(iden)
                     families[c_fam1].info(iden, hid, wid, dom, doe, cid)
-                    #y.add_row([iden, hid, wid, dom, doe, cid])
-                    families[c_fam1].cout()
+                    if no_reps(famillia,iden,flag):
+                        families[c_fam1].err.append("US22")
+                    famillia.append(iden)
+                    # families[c_fam1].cout()
                     c_fam1+=1                    
                 refresh()
                 tag=words[-1]
@@ -213,6 +209,31 @@ try:
                         words=line.split()
                         if words[1]=="DATE":
                             doe=getdate(words[2],words[3],words[4])
+
+    #Siblings shouldn't marry check
+    for i in range(c_fam):
+        for j in range(c_fam):
+            if i != j:
+                if not sibs_no_marry(families[i].hid,families[i].wid,families[j].cid):
+                    families[i].err.append("US18")
+                    families[j].err.append("US18")
+
+
+    #UPDATE PRETTY TABLE
+    x = prettytable.PrettyTable() # For people
+    x.field_names = ["I.D.","NAME","SEX","BIRTH","DEATH","FAM_C","FAM_S","ERRORS"]
+    y = prettytable.PrettyTable() # For Families
+    y.field_names = ["I.D.","HUSBAND","WIFE","MARRIAGE","MARR_END","CHILDREN","ERRORS"]
+    for i in range(c_ind1):
+        individuals[i].update_table()
+    for i in range(c_fam1):
+        families[i].update_table()
+
+    #PRINT DATA
+    print ("INDIVIDUALS")
+    print(x)
+    print ("\nFAMILIES")
+    print(y)
 
 except FileNotFoundError:
     # File not found
