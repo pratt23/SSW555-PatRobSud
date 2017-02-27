@@ -13,7 +13,6 @@ from sudhansh import no_reps
 from sudhansh import sibs_no_marry
 from sudhansh import valid_date
 from prateek import sibling_nos
-import classes
 import prettytable
 
 def getdate(d,m,y):
@@ -49,6 +48,7 @@ class individual:
         self.dod=dod
         self.famc=famc
         self.fams=fams
+        #Checking correctness of dates
         if not valid_date(dod):
             self.err.append("US42-DOD")
         if not valid_date(dob):
@@ -84,6 +84,7 @@ class family:
         self.dom=dom
         self.doe=doe
         self.cid=cid
+        #Checking correctness of dates
         self.sib_no=sibling_nos(cid)
         if not valid_date(dom):
             self.err.append("US42-DOM")
@@ -107,9 +108,9 @@ class family:
 tags = [ "INDI" , "FAM" , "NAME" , "SEX" , "BIRT" , "DEAT" , "FAMC" , "FAMS" , 
 "DATE" , "MARR" , "HUSB" , "WIFE" , "CHIL" , "DIV" ]
 
-#filename = input ( "Enter the location of the file: " )
+filename = input ( "Enter the location of the file: " )
 #filename="/Users/sudhansh/Desktop/CS-555/test1.ged" #For testing purposes
-filename="/Users/sudhansh/git/SSW_555/smith_tree1.ged" #For testing purposes
+#filename="/Users/sudhansh/git/SSW_555/smith_tree1.ged" #For testing purposes
 
 ### CHECKING IF GEDCOM IS ENTERED, HELP TAKEN FORM AKSHAY SUNDERWANI ###
 path = os.getcwd ( )  # method to fetch working directory path.
@@ -119,15 +120,12 @@ if basefilename2[ -1 ] != '.ged':
     print ( "Gedcom file not entered" )
     exit ( )
 
-indi=[]
-famillia=[]
-reps_i=[] #strores conflicting/repeating individual IDs
-reps_f=[] #stores conflicting/repeating family IDs
+indi=[] #List of all individual IDs
+famillia=[] #List of all family IDs
 
 c_ind = c_fam = 0 # for counting the total no.s of individuals and families resp
 c_ind1 = c_fam1 = 0 # for keeping track of indi/fams
 try:
-    # OPEN FILE IN READ MODE
     #Counting the number of people/families
     with open (filename) as file:
         for line in file:
@@ -153,6 +151,7 @@ try:
             if level=='0':
                 if flag == 1:
                     individuals[c_ind1].info(iden, name, sex, dob, dod, famc, fams)
+                    # Checking unique IDs
                     if no_reps(indi,iden,flag):
                         individuals[c_ind1].err.append("US22")
                     indi.append(iden)
@@ -160,6 +159,7 @@ try:
                     c_ind1+=1
                 elif flag == 2:
                     families[c_fam1].info(iden, hid, wid, dom, doe, cid)
+                    # Checking unique IDs
                     if no_reps(famillia,iden,flag):
                         families[c_fam1].err.append("US22")
                     famillia.append(iden)
@@ -210,7 +210,7 @@ try:
                         if words[1]=="DATE":
                             doe=getdate(words[2],words[3],words[4])
 
-    #Siblings shouldn't marry check
+    #Checking that siblings shouldn't marry
     for i in range(c_fam):
         for j in range(c_fam):
             if i != j:
