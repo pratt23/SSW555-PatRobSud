@@ -9,6 +9,7 @@ import os
 import sys
 import codecs
 import datetime
+import Rob_funcs
 from sudhansh import no_reps
 from sudhansh import sibs_no_marry
 from sudhansh import valid_date
@@ -53,7 +54,14 @@ class individual:
             self.err.append("US42-DOD")
         if not valid_date(dob):
             self.err.append("US42-DOB")
-
+        if not Rob_funcs.birth_b4_dth(dob, dod):
+            self.err.append('check birth and death dates')
+        if not Rob_funcs.dates_b4_today(dob) and Rob_funcs.dates_b4_today(dod):
+            self.err.append('date is after current date')
+        
+        
+        
+            
     def showinfo(self):
         print('{} : {}'.format("ID",self.pid))
         print('{} : {}'.format("NAME",self.name))
@@ -90,7 +98,13 @@ class family:
             self.err.append("US42-DOM")
         if not valid_date(doe):
             self.err.append("US42-DOE")
-
+        if not Rob_funcs.marg_b4_dvors(doe, dom):
+            self.err.append('check marriage and devorce dates')
+        if not Rob_funcs.birth_b4_marg(individual.dob, dom):
+            self.err.append('check birth and marriage dates')
+        if not Rob_funcs.dates_b4_today(doe) and Rob_funcs.dates_b4_today(dom):
+            self.err.append('date is after current date')
+        
     def cout(self):
         print('{} : {}'.format("ID",self.fid))
         print('{} : {}'.format("HUSB",self.hid))
@@ -184,6 +198,8 @@ try:
                         words=line.split()
                         if words[1]=="DATE":
                             dob=getdate(words[2],words[3],words[4])
+                            if not Rob_funcs.dates_b4_today(dob):
+                                
                     elif tag == "DEAT":
                         line=next(file)
                         words=line.split()
@@ -209,6 +225,7 @@ try:
                         words=line.split()
                         if words[1]=="DATE":
                             doe=getdate(words[2],words[3],words[4])
+                    
 
     #Checking that siblings shouldn't marry
     for i in range(c_fam):
