@@ -108,9 +108,9 @@ class family:
 tags = [ "INDI" , "FAM" , "NAME" , "SEX" , "BIRT" , "DEAT" , "FAMC" , "FAMS" , 
 "DATE" , "MARR" , "HUSB" , "WIFE" , "CHIL" , "DIV" ]
 
-filename = input ( "Enter the location of the file: " )
+#filename = input ( "Enter the location of the file: " )
 #filename="/Users/sudhansh/Desktop/CS-555/test1.ged" #For testing purposes
-#filename="/Users/sudhansh/git/SSW_555/smith_tree1.ged" #For testing purposes
+filename="/Users/sudhansh/git/SSW_555/smith_tree1.ged" #For testing purposes
 
 ### CHECKING IF GEDCOM IS ENTERED, HELP TAKEN FORM AKSHAY SUNDERWANI ###
 path = os.getcwd ( )  # method to fetch working directory path.
@@ -234,6 +234,13 @@ try:
     print(x)
     print ("\nFAMILIES")
     print(y)
+
+    #Print to output file
+    with open("output.txt", 'w') as write_to:
+            print ("INDIVIDUALS", file=write_to)
+            print(x, file=write_to)
+            print ("\nFAMILIES", file=write_to)
+            print(y, file=write_to)
 
 except FileNotFoundError:
     # File not found
